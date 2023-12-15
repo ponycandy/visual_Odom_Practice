@@ -38,10 +38,10 @@ namespace myslam
 		void Publish();
 
 		std::mutex mMutexViewer;
-		//gpcs::gpcsnode* nh;
-		//gpcs::Publisher* pub_keyFrame;
-		//gpcs::Publisher* pub_3Dpoints;
-		//gpcs::Publisher* pub_Camera_pos;
+		gpcs::gpcsnode* nh;
+		gpcs::Publisher* pub_keyFrame;
+		gpcs::Publisher* pub_3Dpoints;
+		gpcs::Publisher* pub_Camera_pos;
 
 	private:
 		//void DrawCurrentCamera(pangolin::OpenGlMatrix& Twc);

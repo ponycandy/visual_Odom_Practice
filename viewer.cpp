@@ -4,10 +4,10 @@ namespace myslam
 {
 	Viewer::Viewer()
 	{
-		//nh = new gpcs::gpcsnode();
-		//nh->init("Visual_Odom");
-		//pub_3Dpoints = nh->advertise("Slam_data/3D_points");
-		//pub_Camera_pos = nh->advertise("Slam_data/Camerapos");
+		nh = new gpcs::gpcsnode();
+		nh->init("Visual_Odom");
+		pub_3Dpoints = nh->advertise("Slam_data/3D_points");
+		pub_Camera_pos = nh->advertise("Slam_data/Camerapos");
 
 		/*cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 
