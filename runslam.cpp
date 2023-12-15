@@ -55,8 +55,8 @@ double captureImage(cv::Mat& Img, cv::Mat& ImgD,sl::Camera& zed)
 	{
 		// A new image and depth is available if grab() returns SUCCESS
 		zed.retrieveImage(image, sl::VIEW::LEFT); // Retrieve left image
-		zed.retrieveImage(depth_map, sl::VIEW::DEPTH); // Retrieve depth
-		//zed.retrieveMeasure(depth_map, sl::MEASURE::DEPTH);
+		//zed.retrieveImage(depth_map, sl::VIEW::DEPTH); // Retrieve depth
+		zed.retrieveMeasure(depth_map, sl::MEASURE::DEPTH);
 		//可能VIEW才是正确的输入，试一试用VIEW的地图能不能转化
 		sl::Timestamp last_image_timestamp = zed.getTimestamp(sl::TIME_REFERENCE::IMAGE);
 		tframe = last_image_timestamp.getMicroseconds();
@@ -116,7 +116,17 @@ int main()
 	while (true)
 	{
 		double timestamp=captureImage(im, imD , *cam->Getcamera());
-		cv::Mat T_c_w = system.TrackingRGBD(im, imD, timestamp);//这里Im应该没问题，在Qt里面就是这么用的
+		//ushort d=imD.ptr<ushort>(100)[100];
+		//std::cout <<"false d : "<< d<<"\n";
+
+		//depth_map
+		
+		
+	/*	float d_actual;
+		depth_map.getValue(100, 100, &d_actual);
+		std::cout << "real d : " << d_actual << "\n";*/
+		cv::Mat T_c_w = system.TrackingRGBD(im, imD, depth_map, timestamp);//这里Im应该没问题，在Qt里面就是这么用的
+		
 		//相信这里有一定的稳定性，减小搜索空间
 	//	cv::imshow("Image", im);
 	//	cv::imshow("Image", imD);//空的....,所以问题在这里，

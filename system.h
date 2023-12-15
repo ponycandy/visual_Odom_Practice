@@ -21,7 +21,7 @@ namespace myslam
 	public:
 		System(const string& strSettingPath);
 
-		cv::Mat TrackingRGBD(cv::Mat im, cv::Mat imD, double tframe);
+		cv::Mat TrackingRGBD(cv::Mat im, cv::Mat imD,sl::Mat ZedIMD, double tframe);
 		myslam::Camera* Get_Camera();
 	public:
 		Viewer* mpViewer;

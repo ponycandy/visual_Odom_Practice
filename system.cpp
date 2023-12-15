@@ -13,10 +13,10 @@ namespace myslam
 		m_pVO = new myslam::VisualOdometry(strSettingPath, mpViewer);
 	}
 
-	cv::Mat System::TrackingRGBD(cv::Mat im, cv::Mat imD, double tframe)
+	cv::Mat System::TrackingRGBD(cv::Mat im, cv::Mat imD, sl::Mat ZedIMD, double tframe)
 	{
 		//¿ªÊ¼¸ú×Ù
-		return m_pVO->Tracking(im, imD, tframe);
+		return m_pVO->Tracking(im, imD, ZedIMD, tframe);
 	}
 	myslam::Camera* System::Get_Camera()
 	{

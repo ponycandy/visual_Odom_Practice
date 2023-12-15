@@ -16,12 +16,13 @@ namespace myslam
 		cv::Mat T_c_w_;            //世界坐标系到相机坐标系的变换关系
 		Camera* camera_;           //相机类指针
 		cv::Mat color_, depth_;    //彩图与深度图
+		sl::Mat depth_zed;
 	public:
 		//默认构造函数
 		Frame();
 
 		//构造图像帧
-		Frame(long id, double time_stamp = 0, cv::Mat T_c_w = cv::Mat(), Camera* camera = nullptr, cv::Mat color = cv::Mat(), cv::Mat depth = cv::Mat());
+		Frame(long id, double time_stamp = 0, cv::Mat T_c_w = cv::Mat(), Camera* camera = nullptr, cv::Mat color = cv::Mat(), cv::Mat depth = cv::Mat(),sl::Mat depth_zed= sl::Mat());
 
 		//找到某个特征点在深度图中对应的深度值
 		double findDepth(const cv::KeyPoint& kp);

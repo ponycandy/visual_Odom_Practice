@@ -41,12 +41,13 @@ namespace myslam
 	}
 
 	//跟踪
-	cv::Mat VisualOdometry::Tracking(cv::Mat im, cv::Mat imD, double tframe)
+	cv::Mat VisualOdometry::Tracking(cv::Mat im, cv::Mat imD,sl::Mat ZEDIMD, double tframe)
 	{
 		//构建图像帧
 		Frame* pFrame = new Frame(frameid);
 		pFrame->color_ = im;
 		pFrame->depth_ = imD;
+		pFrame->depth_zed = ZEDIMD;
 		pFrame->camera_ = mp_camera;
 		pFrame->time_stamp_ = tframe;//这东西好像没有用？
 

@@ -4,8 +4,8 @@
 namespace myslam
 {
 	Frame::Frame() :id_(-1), time_stamp_(-1), camera_(nullptr) {}
-	Frame::Frame(long id, double time_stamp, cv::Mat T_c_w, Camera* camera, cv::Mat color, cv::Mat depth) :
-		id_(id), time_stamp_(time_stamp), T_c_w_(T_c_w), camera_(camera), color_(color), depth_(depth)
+	Frame::Frame(long id, double time_stamp, cv::Mat T_c_w, Camera* camera, cv::Mat color, cv::Mat depth,sl::Mat depthzd) :
+		id_(id), time_stamp_(time_stamp), T_c_w_(T_c_w), camera_(camera), color_(color), depth_(depth),depth_zed(depthzd)
 	{
 
 	}
@@ -17,9 +17,11 @@ namespace myslam
 		int x = round(kp.pt.x);
 		int y = round(kp.pt.y);
 
-		ushort d = depth_.ptr<ushort>(y)[x];
-		if (d != 0)
-			return d / camera_->depth_scale_;
+	//	ushort d = depth_.ptr<ushort>(y)[x];
+		float d_actual;
+		depth_zed.getValue(x, y, &d_actual);
+		if (d_actual != 0)
+			return d_actual / camera_->depth_scale_;
 		else
 		{
 			//没有找到合适的深度值时,在其四领域内再次查找
@@ -27,9 +29,10 @@ namespace myslam
 			int dy[4] = { 0,-1, 0, 1 };
 			for (int i = 0; i < 4; i++)
 			{
-				d = depth_.ptr<ushort>(y + dy[i])[x + dx[i]];
-				if (d != 0)
-					return d / camera_->depth_scale_;
+				depth_zed.getValue(x + dx[i], y + dy[i], &d_actual);
+				//d_actual = depth_.ptr<ushort>(y + dy[i])[x + dx[i]];
+				if (d_actual != 0)
+					return d_actual / camera_->depth_scale_;
 			}
 		}
 		return -1.0;

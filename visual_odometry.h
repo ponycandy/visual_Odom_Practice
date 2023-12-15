@@ -78,7 +78,7 @@ namespace myslam
         VisualOdometry(std::string strSettingPath, Viewer* pViewer);
         ~VisualOdometry();
 
-        cv::Mat Tracking(cv::Mat im, cv::Mat imD, double tframe);
+        cv::Mat Tracking(cv::Mat im, cv::Mat imD, sl::Mat ZEDIMD, double tframe);
     private:
         cv::Mat addFrame(Frame* frame);
 
