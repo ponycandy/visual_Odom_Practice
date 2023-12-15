@@ -75,6 +75,8 @@ namespace myslam
 
 			//当前帧插入地图
 			map_->insertKeyFrame(frame);
+			//需要广播这一帧
+			
 
 			//提取ORB特征
 			ExtractORB();
@@ -137,12 +139,25 @@ namespace myslam
 				mvAllFrame.push_back(curr_);
 
 				cv::Mat T_c_w = curr_->T_c_w_;
-
+				gpcs::mat TCW;
+				TCW.rows = 4; TCW.cols = 4;
+				TCW.resize(TCW.rows, TCW.cols);
+				for (int i = 0; i < TCW.rows; i++)
+				{
+					for (int j = 0; j < TCW.cols;j++)
+					{
+						TCW[i][j] = T_c_w.at<float>(i, j);
+					}
+				}
+			/*	mpViewer->pub_Camera_pos->publish(TCW);*/
 				//向显示类中添加相信的数据,显示类我们单独做，现在找一找显示类viewer的入口
-				//mpViewer->SetCurrentCameraPose(T_c_w);
-				//mpViewer->GetAllFrame(mvAllFrame);
-				//mpViewer->GetAll3dPoints(pts_3d_all);
-				//mpViewer->SetVisualOdometry(this);
+				//map_.keyframe没有被绘制，被绘制的是mvAllFrame
+				//也就是说，只要没有lost，每一帧都是关键帧
+				mpViewer->SetCurrentCameraPose(T_c_w);
+				mpViewer->GetAllFrame(mvAllFrame);
+				mpViewer->GetAll3dPoints(pts_3d_all);
+				mpViewer->SetVisualOdometry(this);
+				//应该OK了，接下来就是在另一边接受然后展开了
 
 				cv::waitKey(10);
 
@@ -190,15 +205,24 @@ namespace myslam
 	{
 		pts_3d_ref.clear();
 		descriptors_ref_ = cv::Mat();
+		gpcs::mat points3d;
+		points3d.cols = 3;
+		points3d.rows = keypoints_curr_.size();
+		points3d.resize(points3d.rows, points3d.cols);
 		for (int i = 0; i < keypoints_curr_.size(); i++)
 		{
 			double d = ref_->findDepth(keypoints_curr_[i]);
 
 			cv::Point3f p_cam = ref_->camera_->pixel2camera(cv::Point2f(keypoints_curr_[i].pt.x, keypoints_curr_[i].pt.y), d);
 			pts_3d_ref.push_back(p_cam);
+			points3d[i][0] = p_cam.x;
+			points3d[i][1] = p_cam.y;
+			points3d[i][2] = p_cam.z;
 			pts_3d_all.push_back(p_cam);
 			descriptors_ref_.push_back(descriptors_curr_.row(i));
 		}
+		//直接将pts_3d_ref全体发送到另一边
+		//mpViewer->pub_3Dpoints->publish(points3d);
 	}
 
 	void VisualOdometry::poseEstimationPnP()

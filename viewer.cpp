@@ -2,9 +2,14 @@
 
 namespace myslam
 {
-	Viewer::Viewer(std::string strSettingPath)
+	Viewer::Viewer()
 	{
-	/*	cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
+		//nh = new gpcs::gpcsnode();
+		//nh->init("Visual_Odom");
+		//pub_3Dpoints = nh->advertise("Slam_data/3D_points");
+		//pub_Camera_pos = nh->advertise("Slam_data/Camerapos");
+
+		/*cv::FileStorage fSettings(strSettingPath, cv::FileStorage::READ);
 
 		float fps = fSettings["Camera.fps"];
 		if (fps < 1)
@@ -37,7 +42,6 @@ namespace myslam
 	// pangolin库的文档：http://docs.ros.org/fuerte/api/pangolin_wrapper/html/namespacepangolin.html
 	void Viewer::Run()
 	{
-		//这里是显示任务的入口，可以不用管显示，交给另一个visualizer来做
 		//{
 		//	//互斥做,初始化显示窗口时,不进行位姿运算,对应visual_odometry中的addframe函数
 		//	std::unique_lock<std::mutex> lock(mMutexViewer);
@@ -116,143 +120,142 @@ namespace myslam
 		//const float h = w * 0.75;
 		//const float z = w * 0.6;
 
-		{
-			////互斥锁,在使用关键帧信息时,不能修改
-			//std::unique_lock<std::mutex> lock(mMutexTrackingFrame);
+		//{
+		//	//互斥锁,在使用关键帧信息时,不能修改
+		//	std::unique_lock<std::mutex> lock(mMutexTrackingFrame);
 
-			////绘制所有的关键帧位置
-			//for (int i = 0; i < mvAllFrame.size(); i++)
-			//{
-			//	Frame* cur = mvAllFrame[i];
-			//	cv::Mat Twc = cur->T_c_w_.inv();
+		//	//绘制所有的关键帧位置
+		//	for (int i = 0; i < mvAllFrame.size(); i++)
+		//	{
+		//		Frame* cur = mvAllFrame[i];
+		//		cv::Mat Twc = cur->T_c_w_.inv();
 
-			//	//pangolin::OpenGlMatrix M;
-			//	if (!Twc.empty())
-			//	{
-			//		cv::Mat Rwc(3, 3, CV_32F);
-			//		cv::Mat twc(3, 1, CV_32F);
-			//		{
-			//			Rwc = Twc.rowRange(0, 3).colRange(0, 3);
-			//			twc = Twc.rowRange(0, 3).col(3);
-			//		}
+		//		pangolin::OpenGlMatrix M;
+		//		if (!Twc.empty())
+		//		{
+		//			cv::Mat Rwc(3, 3, CV_32F);
+		//			cv::Mat twc(3, 1, CV_32F);
+		//			{
+		//				Rwc = Twc.rowRange(0, 3).colRange(0, 3);
+		//				twc = Twc.rowRange(0, 3).col(3);
+		//			}
 
-			//		M.m[0] = Rwc.at<float>(0, 0);
-			//		M.m[1] = Rwc.at<float>(1, 0);
-			//		M.m[2] = Rwc.at<float>(2, 0);
-			//		M.m[3] = 0.0;
+		//			M.m[0] = Rwc.at<float>(0, 0);
+		//			M.m[1] = Rwc.at<float>(1, 0);
+		//			M.m[2] = Rwc.at<float>(2, 0);
+		//			M.m[3] = 0.0;
 
-			//		M.m[4] = Rwc.at<float>(0, 1);
-			//		M.m[5] = Rwc.at<float>(1, 1);
-			//		M.m[6] = Rwc.at<float>(2, 1);
-			//		M.m[7] = 0.0;
+		//			M.m[4] = Rwc.at<float>(0, 1);
+		//			M.m[5] = Rwc.at<float>(1, 1);
+		//			M.m[6] = Rwc.at<float>(2, 1);
+		//			M.m[7] = 0.0;
 
-			//		M.m[8] = Rwc.at<float>(0, 2);
-			//		M.m[9] = Rwc.at<float>(1, 2);
-			//		M.m[10] = Rwc.at<float>(2, 2);
-			//		M.m[11] = 0.0;
+		//			M.m[8] = Rwc.at<float>(0, 2);
+		//			M.m[9] = Rwc.at<float>(1, 2);
+		//			M.m[10] = Rwc.at<float>(2, 2);
+		//			M.m[11] = 0.0;
 
-			//		M.m[12] = twc.at<float>(0);
-			//		M.m[13] = twc.at<float>(1);
-			//		M.m[14] = twc.at<float>(2);
-			//		M.m[15] = 1.0;
-			//	}
-			//	//else
-			//	//M.SetIdentity();
+		//			M.m[12] = twc.at<float>(0);
+		//			M.m[13] = twc.at<float>(1);
+		//			M.m[14] = twc.at<float>(2);
+		//			M.m[15] = 1.0;
+		//		}
+		//		else
+		//			M.SetIdentity();
 
-			//	//glPushMatrix();
-			//	//glMultMatrixd(M.m);
+		//		glPushMatrix();
+		//		glMultMatrixd(M.m);
 
-			//	//glLineWidth(mKeyFrameLineWidth);
-			//	//glColor3f(0.0f, 0.0f, 1.0f);
-			//	//glBegin(GL_LINES);
-			//	//glVertex3f(0, 0, 0);
-			//	//glVertex3f(w, h, z);
-			//	//glVertex3f(0, 0, 0);
-			//	//glVertex3f(w, -h, z);
-			//	//glVertex3f(0, 0, 0);
-			//	//glVertex3f(-w, -h, z);
-			//	//glVertex3f(0, 0, 0);
-			//	//glVertex3f(-w, h, z);
+		//		glLineWidth(mKeyFrameLineWidth);
+		//		glColor3f(0.0f, 0.0f, 1.0f);
+		//		glBegin(GL_LINES);
+		//		glVertex3f(0, 0, 0);
+		//		glVertex3f(w, h, z);
+		//		glVertex3f(0, 0, 0);
+		//		glVertex3f(w, -h, z);
+		//		glVertex3f(0, 0, 0);
+		//		glVertex3f(-w, -h, z);
+		//		glVertex3f(0, 0, 0);
+		//		glVertex3f(-w, h, z);
 
-			//	//glVertex3f(w, h, z);
-			//	//glVertex3f(w, -h, z);
+		//		glVertex3f(w, h, z);
+		//		glVertex3f(w, -h, z);
 
-			//	//glVertex3f(-w, h, z);
-			//	//glVertex3f(-w, -h, z);
+		//		glVertex3f(-w, h, z);
+		//		glVertex3f(-w, -h, z);
 
-			//	//glVertex3f(-w, h, z);
-			//	//glVertex3f(w, h, z);
+		//		glVertex3f(-w, h, z);
+		//		glVertex3f(w, h, z);
 
-			//	//glVertex3f(-w, -h, z);
-			//	//glVertex3f(w, -h, z);
-			//	//glEnd();
+		//		glVertex3f(-w, -h, z);
+		//		glVertex3f(w, -h, z);
+		//		glEnd();
 
-			//	//glPopMatrix();
-			//}
-		}
+		//		glPopMatrix();
+		//	}
+		//}
 	}
 
 	void Viewer::DrawMapPoints()
 	{
-		{
-			//互斥锁,在使用三维点信息时,不能修改
-			//std::unique_lock<std::mutex> lock(mMutex3dPoints);
-			//glPointSize(mPointSize);
-			//glBegin(GL_POINTS);
-			//glColor3f(0.0, 0.0, 0.0);
+		//{
+		//	//互斥锁,在使用三维点信息时,不能修改
+		//	std::unique_lock<std::mutex> lock(mMutex3dPoints);
+		//	glPointSize(mPointSize);
+		//	glBegin(GL_POINTS);
+		//	glColor3f(0.0, 0.0, 0.0);
 
-			////绘制所有的三维点
-			//for (int i = 0; i < mAll3dpts.size(); i += 10)
-			//{
-			//	cv::Mat pos = cv::Mat(mAll3dpts[i]);
-			//	glVertex3f(pos.at<float>(0), pos.at<float>(1), pos.at<float>(2));
-			//}
-			//glEnd();
-		}
+		//	//绘制所有的三维点
+		//	for (int i = 0; i < mAll3dpts.size(); i += 10)
+		//	{
+		//		cv::Mat pos = cv::Mat(mAll3dpts[i]);
+		//		glVertex3f(pos.at<float>(0), pos.at<float>(1), pos.at<float>(2));
+		//	}
+		//	glEnd();
+		//}
 	}
 
-	cv::Mat Viewer::DrawFrame()
-	{
-		//const float r = 5;
+	//cv::Mat Viewer::DrawFrame()
+	//{
+	//	//const float r = 5;
 
-		//if (VisualOdometry_ == nullptr)
-		//	return cv::Mat();
+	//	//if (VisualOdometry_ == nullptr)
+	//	//	return cv::Mat();
 
-		//if (VisualOdometry_->keypoints_curr_.size() == 0 || VisualOdometry_->feature_matches_.size() == 0)
-		//	return cv::Mat();
+	//	//if (VisualOdometry_->keypoints_curr_.size() == 0 || VisualOdometry_->feature_matches_.size() == 0)
+	//	//	return cv::Mat();
 
-		//{
-		//	//互斥锁,在使用里程计信息时,不能修改
-		//	std::unique_lock<std::mutex> lock(mMutex);
+	//	//{
+	//	//	//互斥锁,在使用里程计信息时,不能修改
+	//	//	std::unique_lock<std::mutex> lock(mMutex);
 
-		//	mkps = VisualOdometry_->keypoints_curr_;
-		//	mfeature_matches = VisualOdometry_->feature_matches_;
-		//	mIm = VisualOdometry_->curr_->color_;
+	//	//	mkps = VisualOdometry_->keypoints_curr_;
+	//	//	mfeature_matches = VisualOdometry_->feature_matches_;
+	//	//	mIm = VisualOdometry_->curr_->color_;
 
-		//	n = mfeature_matches.size();
-		//}
+	//	//	n = mfeature_matches.size();
+	//	//}
 
-		////在图像上绘制出二维点坐标
-		//for (int i = 0; i < n; i++)
-		//{
-		//	int index = mfeature_matches[i].trainIdx;
-		//	cv::Point2f pt1, pt2;
-		//	pt1.x = mkps[index].pt.x - r;
-		//	pt1.y = mkps[index].pt.y - r;
-		//	pt2.x = mkps[index].pt.x + r;
-		//	pt2.y = mkps[index].pt.y + r;
+	//	////在图像上绘制出二维点坐标
+	//	//for (int i = 0; i < n; i++)
+	//	//{
+	//	//	int index = mfeature_matches[i].trainIdx;
+	//	//	cv::Point2f pt1, pt2;
+	//	//	pt1.x = mkps[index].pt.x - r;
+	//	//	pt1.y = mkps[index].pt.y - r;
+	//	//	pt2.x = mkps[index].pt.x + r;
+	//	//	pt2.y = mkps[index].pt.y + r;
 
-		//	cv::rectangle(mIm, pt1, pt2, cv::Scalar(0, 255, 0));
-		//	cv::circle(mIm, mkps[index].pt, 2, cv::Scalar(0, 255, 0), -1);
-		//}
+	//	//	cv::rectangle(mIm, pt1, pt2, cv::Scalar(0, 255, 0));
+	//	//	cv::circle(mIm, mkps[index].pt, 2, cv::Scalar(0, 255, 0), -1);
+	//	//}
 
-		//return mIm;
-		return cv::Mat();
-	}
+	//	//return mIm;
+	//}
 
 	void Viewer::SetCurrentCameraPose(const cv::Mat& Tcw)
 	{
-		//互斥锁,在使用相机位姿时,不能修改其值
+		////互斥锁,在使用相机位姿时,不能修改其值
 		//std::unique_lock<std::mutex> lock(mMutexCamera);
 		//mCameraPose = Tcw.clone();
 		//mCameraPose = mCameraPose.inv();
@@ -267,101 +270,115 @@ namespace myslam
 
 	void Viewer::GetAllFrame(std::vector<Frame*> vAllFrame)
 	{
-		//互斥锁,在使用关键帧信息时,不能修改
+		////互斥锁,在使用关键帧信息时,不能修改
 		//std::unique_lock<std::mutex> lock(mMutexTrackingFrame);
 		//mvAllFrame = vAllFrame;
 	}
 
 	void Viewer::GetAll3dPoints(std::vector<cv::Point3f> All3dpts)
 	{
-		//互斥锁,在使用三维点信息时,不能修改
+		////互斥锁,在使用三维点信息时,不能修改
 		//std::unique_lock<std::mutex> lock(mMutex3dPoints);
 		//mAll3dpts = All3dpts;
 	}
 
-	////关于gl相关的函数，可直接google, 并加上msdn关键词
-	//void Viewer::DrawCurrentCamera(pangolin::OpenGlMatrix& Twc)
-	//{
-	//	//相机模型大小
-	//	const float& w = mCameraSize * 0.5;
-	//	const float h = w * 0.75;
-	//	const float z = w * 0.6;
+	void Viewer::Publish()
+	{
+		//好的，哪些数据需要广播呢，参考一下这里的可视化过程
+		//相机位置，相机历史所有关键帧位置，所有历史IMD特征点位置
+		//历史位置采用迭代增加机制，每次只广播一组位置，（可能为0，那就是没有新的关键帧）
+		//这里设置三组publisher，分别为：相机pos的publisher,每次生成新的位置的时候广播
+		//关键帧位置，同上,其实就是没有出现lost的时候的每一帧相机位置
+		//特征点位置同上，就是点的3D位置，甚至没有颜色
+		//那么,publisher本身就没啥必要了
+		//首先pos的4*4矩阵可以直接传送
+		//设置通用数据发送格式，矩阵！
+	}
 
-	//	glPushMatrix();
-
-	//	//将4*4的矩阵Twc.m右乘一个当前矩阵
-	//	//（由于使用了glPushMatrix函数，因此当前帧矩阵为世界坐标系下的单位矩阵）
-	//	//因为OpenGL中的矩阵为列优先存储，因此实际为Tcw，即相机在世界坐标下的位姿
-	//	glMultMatrixd(Twc.m);
-
-	//	//设置绘制图形时线的宽度
-	//	glLineWidth(mCameraLineWidth);
-
-	//	//设置当前颜色为绿色(相机图标显示为绿色)
-	//	glColor3f(0.0f, 1.0f, 0.0f);
-
-	//	//用线将下面的顶点两两相连
-	//	glBegin(GL_LINES);
-	//	glVertex3f(0, 0, 0);
-	//	glVertex3f(w, h, z);
-	//	glVertex3f(0, 0, 0);
-	//	glVertex3f(w, -h, z);
-	//	glVertex3f(0, 0, 0);
-	//	glVertex3f(-w, -h, z);
-	//	glVertex3f(0, 0, 0);
-	//	glVertex3f(-w, h, z);
-
-	//	glVertex3f(w, h, z);
-	//	glVertex3f(w, -h, z);
-
-	//	glVertex3f(-w, h, z);
-	//	glVertex3f(-w, -h, z);
-
-	//	glVertex3f(-w, h, z);
-	//	glVertex3f(w, h, z);
-
-	//	glVertex3f(-w, -h, z);
-	//	glVertex3f(w, -h, z);
-	//	glEnd();
-
-	//	glPopMatrix();
-	//}
-
-	//// 将相机位姿mCameraPose由Mat类型转化为OpenGlMatrix类型
-	//void Viewer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix& M)
-	//{
-	//	if (!mCameraPose.empty())
+	//	//关于gl相关的函数，可直接google, 并加上msdn关键词
+	//	//void Viewer::DrawCurrentCamera(pangolin::OpenGlMatrix& Twc)
 	//	{
-	//		cv::Mat Rcw(3, 3, CV_32F);
-	//		cv::Mat tcw(3, 1, CV_32F);
-	//		{
-	//			//互斥锁,在使用相机位姿时,不能修改其值
-	//			std::unique_lock<std::mutex> lock(mMutexCamera);
-	//			Rcw = mCameraPose.rowRange(0, 3).colRange(0, 3);
-	//			tcw = mCameraPose.rowRange(0, 3).col(3);
-	//		}
-
-	//		M.m[0] = Rcw.at<float>(0, 0);
-	//		M.m[1] = Rcw.at<float>(1, 0);
-	//		M.m[2] = Rcw.at<float>(2, 0);
-	//		M.m[3] = 0.0;
-
-	//		M.m[4] = Rcw.at<float>(0, 1);
-	//		M.m[5] = Rcw.at<float>(1, 1);
-	//		M.m[6] = Rcw.at<float>(2, 1);
-	//		M.m[7] = 0.0;
-
-	//		M.m[8] = Rcw.at<float>(0, 2);
-	//		M.m[9] = Rcw.at<float>(1, 2);
-	//		M.m[10] = Rcw.at<float>(2, 2);
-	//		M.m[11] = 0.0;
-
-	//		M.m[12] = tcw.at<float>(0);
-	//		M.m[13] = tcw.at<float>(1);
-	//		M.m[14] = tcw.at<float>(2);
-	//		M.m[15] = 1.0;
+	//		////相机模型大小
+	//		//const float& w = mCameraSize * 0.5;
+	//		//const float h = w * 0.75;
+	//		//const float z = w * 0.6;
+	//
+	//		//glPushMatrix();
+	//
+	//		////将4*4的矩阵Twc.m右乘一个当前矩阵
+	//		////（由于使用了glPushMatrix函数，因此当前帧矩阵为世界坐标系下的单位矩阵）
+	//		////因为OpenGL中的矩阵为列优先存储，因此实际为Tcw，即相机在世界坐标下的位姿
+	//		//glMultMatrixd(Twc.m);
+	//
+	//		////设置绘制图形时线的宽度
+	//		//glLineWidth(mCameraLineWidth);
+	//
+	//		////设置当前颜色为绿色(相机图标显示为绿色)
+	//		//glColor3f(0.0f, 1.0f, 0.0f);
+	//
+	//		////用线将下面的顶点两两相连
+	//		//glBegin(GL_LINES);
+	//		//glVertex3f(0, 0, 0);
+	//		//glVertex3f(w, h, z);
+	//		//glVertex3f(0, 0, 0);
+	//		//glVertex3f(w, -h, z);
+	//		//glVertex3f(0, 0, 0);
+	//		//glVertex3f(-w, -h, z);
+	//		//glVertex3f(0, 0, 0);
+	//		//glVertex3f(-w, h, z);
+	//
+	//		//glVertex3f(w, h, z);
+	//		//glVertex3f(w, -h, z);
+	//
+	//		//glVertex3f(-w, h, z);
+	//		//glVertex3f(-w, -h, z);
+	//
+	//		//glVertex3f(-w, h, z);
+	//		//glVertex3f(w, h, z);
+	//
+	//		//glVertex3f(-w, -h, z);
+	//		//glVertex3f(w, -h, z);
+	//		//glEnd();
+	//
+	//		//glPopMatrix();
 	//	}
-	//	else
-	//		M.SetIdentity();
-	//}
+	//
+	//	// 将相机位姿mCameraPose由Mat类型转化为OpenGlMatrix类型
+	////	void Viewer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix& M)
+	////	{
+	////	//	if (!mCameraPose.empty())
+	////	//	{
+	////	//		cv::Mat Rcw(3, 3, CV_32F);
+	////	//		cv::Mat tcw(3, 1, CV_32F);
+	////	//		{
+	////	//			//互斥锁,在使用相机位姿时,不能修改其值
+	////	//			std::unique_lock<std::mutex> lock(mMutexCamera);
+	////	//			Rcw = mCameraPose.rowRange(0, 3).colRange(0, 3);
+	////	//			tcw = mCameraPose.rowRange(0, 3).col(3);
+	////	//		}
+	////
+	////	//		M.m[0] = Rcw.at<float>(0, 0);
+	////	//		M.m[1] = Rcw.at<float>(1, 0);
+	////	//		M.m[2] = Rcw.at<float>(2, 0);
+	////	//		M.m[3] = 0.0;
+	////
+	////	//		M.m[4] = Rcw.at<float>(0, 1);
+	////	//		M.m[5] = Rcw.at<float>(1, 1);
+	////	//		M.m[6] = Rcw.at<float>(2, 1);
+	////	//		M.m[7] = 0.0;
+	////
+	////	//		M.m[8] = Rcw.at<float>(0, 2);
+	////	//		M.m[9] = Rcw.at<float>(1, 2);
+	////	//		M.m[10] = Rcw.at<float>(2, 2);
+	////	//		M.m[11] = 0.0;
+	////
+	////	//		M.m[12] = tcw.at<float>(0);
+	////	//		M.m[13] = tcw.at<float>(1);
+	////	//		M.m[14] = tcw.at<float>(2);
+	////	//		M.m[15] = 1.0;
+	////	//	}
+	////	//	else
+	////	//		M.SetIdentity();
+	////	//}
+	////}
 }

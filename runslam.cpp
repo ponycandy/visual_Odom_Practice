@@ -1,5 +1,5 @@
 
-#include <windows.h>
+
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -8,6 +8,7 @@
 #include <opencv2/core/core.hpp>
 
 #include "system.h"
+
 
 myslam::Viewer* mpViewer;
 std::thread* mptViewer;

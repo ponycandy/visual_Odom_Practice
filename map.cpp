@@ -4,6 +4,7 @@ namespace myslam
 {
 	void Map::insertKeyFrame(Frame* frame)
 	{
+		//keyframe并没有被绘制
 		std::cout << "Key frame size = " << keyframe_.size() << std::endl;
 		if (keyframe_.find(frame->id_) == keyframe_.end())
 		{

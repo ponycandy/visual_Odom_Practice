@@ -1,15 +1,16 @@
 #ifndef VIEWER_H
 #define VIEWER_H
-
+#include "gpcsmat.h"
+#include "gpcsnode.h"
 #include <thread>
 #include <mutex>
 #include <iomanip>
 #include <opencv2/core/core.hpp>
 
-#include "visual_odometry.h"
 
+#include "visual_odometry.h"
 #include <opencv2/opencv.hpp>
-//#include <pangolin/pangolin.h>
+#include <windows.h>
 
 namespace myslam
 {
@@ -17,7 +18,7 @@ namespace myslam
 	class Viewer
 	{
 	public:
-		Viewer(std::string strSettingPath);
+		Viewer();
 
 		void Run();
 
@@ -33,20 +34,27 @@ namespace myslam
 		//获得所有的三维点数据
 		void GetAll3dPoints(std::vector<cv::Point3f> All3dpts);
 
+		//广播数据到可视化设备
+		void Publish();
+
 		std::mutex mMutexViewer;
+		//gpcs::gpcsnode* nh;
+		//gpcs::Publisher* pub_keyFrame;
+		//gpcs::Publisher* pub_3Dpoints;
+		//gpcs::Publisher* pub_Camera_pos;
 
 	private:
-	//	void DrawCurrentCamera(pangolin::OpenGlMatrix& Twc);
-	//	void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix& M);
+		//void DrawCurrentCamera(pangolin::OpenGlMatrix& Twc);
+		//void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix& M);
 
 		void DrawTrackingFrame();
 		void DrawMapPoints();
 
-		cv::Mat DrawFrame();
+		//cv::Mat DrawFrame();
 
-		//pangolin::View d_cam;
-		//pangolin::OpenGlMatrix Tcw;
-		//pangolin::OpenGlRenderState s_cam;
+	/*	pangolin::View d_cam;
+		pangolin::OpenGlMatrix Tcw;
+		pangolin::OpenGlRenderState s_cam;*/
 
 		std::mutex mMutexCamera;
 		std::mutex mMutexTrackingFrame;
@@ -81,6 +89,7 @@ namespace myslam
 		cv::Mat mCameraPose;
 
 		myslam::VisualOdometry* VisualOdometry_;
+	
 	};
 }
 #endif

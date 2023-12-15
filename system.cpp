@@ -6,8 +6,7 @@ namespace myslam
 	System::System(const string& strSettingPath)
 	{
 		//初始化界面显示线程,显示线程可以首先不管
-		mpViewer = new Viewer(strSettingPath);
-		mptViewer = new thread(&Viewer::Run, mpViewer);
+		mpViewer = new Viewer();
 
 		//初始化视觉里程计指针
 		m_pVO = new myslam::VisualOdometry(strSettingPath, mpViewer);
