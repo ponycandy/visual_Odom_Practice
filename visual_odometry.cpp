@@ -149,7 +149,7 @@ namespace myslam
 						TCW[i][j] = T_c_w.at<float>(i, j);
 					}
 				}
-			/*	mpViewer->pub_Camera_pos->publish(TCW);*/
+				mpViewer->pub_Camera_pos->publish(TCW);
 				//向显示类中添加相信的数据,显示类我们单独做，现在找一找显示类viewer的入口
 				//map_.keyframe没有被绘制，被绘制的是mvAllFrame
 				//也就是说，只要没有lost，每一帧都是关键帧
@@ -206,13 +206,13 @@ namespace myslam
 		pts_3d_ref.clear();
 		descriptors_ref_ = cv::Mat();
 		gpcs::mat points3d;
-		points3d.cols = 3;
-		points3d.rows = keypoints_curr_.size();
-		points3d.resize(points3d.rows, points3d.cols);
+		points3d.resize(keypoints_curr_.size(),3);
+		int hg = 0;
 		for (int i = 0; i < keypoints_curr_.size(); i++)
 		{
 			double d = ref_->findDepth(keypoints_curr_[i]);
-
+			if (d != -1)
+				hg++;
 			cv::Point3f p_cam = ref_->camera_->pixel2camera(cv::Point2f(keypoints_curr_[i].pt.x, keypoints_curr_[i].pt.y), d);
 			pts_3d_ref.push_back(p_cam);
 			points3d[i][0] = p_cam.x;
@@ -222,7 +222,7 @@ namespace myslam
 			descriptors_ref_.push_back(descriptors_curr_.row(i));
 		}
 		//直接将pts_3d_ref全体发送到另一边
-		//mpViewer->pub_3Dpoints->publish(points3d);
+		mpViewer->pub_3Dpoints->publish(points3d);
 	}
 
 	void VisualOdometry::poseEstimationPnP()

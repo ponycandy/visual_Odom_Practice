@@ -20,7 +20,7 @@ namespace myslam
 	//	ushort d = depth_.ptr<ushort>(y)[x];
 		float d_actual;
 		depth_zed.getValue(x, y, &d_actual);
-		if (d_actual != 0)
+		if (d_actual != 0 && std::isnan(d_actual)!=0 && std::isinf(d_actual) != 0)
 			return d_actual / camera_->depth_scale_;
 		else
 		{
@@ -31,7 +31,7 @@ namespace myslam
 			{
 				depth_zed.getValue(x + dx[i], y + dy[i], &d_actual);
 				//d_actual = depth_.ptr<ushort>(y + dy[i])[x + dx[i]];
-				if (d_actual != 0)
+				if (d_actual != 0 && std::isnan(d_actual) != 0 && std::isinf(d_actual) != 0)
 					return d_actual / camera_->depth_scale_;
 			}
 		}

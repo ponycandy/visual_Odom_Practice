@@ -15,6 +15,7 @@ std::thread* mptViewer;
 cv::Mat im, imD,imDview;
 sl::Mat image(1280, 720, sl::MAT_TYPE::U8_C4);
 sl::Mat depth_map(1280, 720, sl::MAT_TYPE::U8_C4);
+sl::Mat visual_depth_map(1280, 720, sl::MAT_TYPE::U8_C4);
 
 inline int getOCVtype(sl::MAT_TYPE type)
 {
@@ -59,6 +60,8 @@ double captureImage(cv::Mat& Img, cv::Mat& ImgD,sl::Camera& zed)
 		//zed.retrieveImage(depth_map, sl::VIEW::DEPTH); // Retrieve depth
 		zed.retrieveMeasure(depth_map, sl::MEASURE::DEPTH);
 		//可能VIEW才是正确的输入，试一试用VIEW的地图能不能转化
+		//zed.retrieveImage(visual_depth_map, sl::VIEW::DEPTH);
+
 		sl::Timestamp last_image_timestamp = zed.getTimestamp(sl::TIME_REFERENCE::IMAGE);
 		tframe = last_image_timestamp.getMicroseconds();
 	}
@@ -110,7 +113,7 @@ int main()
 	myslam::Camera* cam = system.Get_Camera();
 
 	im = slMat2cvMat(image);
-	imD = slMat2cvMat(depth_map);
+	imD = slMat2cvMat(visual_depth_map);
 
 	cv::Mat leftImage, rightImage;
 	sl::Mat Pointcloud;
@@ -130,7 +133,7 @@ int main()
 		
 		//相信这里有一定的稳定性，减小搜索空间
 	//	cv::imshow("Image", im);
-	//	cv::imshow("Image", imD);//空的....,所以问题在这里，
+		//cv::imshow("Image", imD);//空的....,所以问题在这里，
 		//图像类的东西就是这里麻烦，首先得搞定图像的数据类型
 		//看来问题在imD上面
 		
