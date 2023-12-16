@@ -117,39 +117,41 @@ namespace myslam
 				//估计上一帧与当前帧的位置关系
 				poseEstimationPnP();
 
-				//检测位姿是否正确
+				//检测位姿是否正确，当good match太少的时候，会被reject
 				if (checkEstimatedPose() == true)
 				{
 					//计算当前帧相对于世界坐标系的位姿
 					curr_->T_c_w_ = T_c_r_estimate * ref_->T_c_w_;
 					ref_ = curr_;
-
 					//计算当前帧的三维点
 					setRef3DPoints();
 					num_lost_ = 0;
-
 					//是否是关键帧
 					if (checkKeyFrame() == true)
 					{
 						addKeyFrame();
+						//只有在关键帧的时候，才会发送此时的位置
 					}
+					cv::Mat T_c_w = curr_->T_c_w_;
+					//首先检测T_c_w里面的值
+					//这一步单独会出错
+					gpcs::mat TCW;
+					TCW.rows = 4; TCW.cols = 4;
+					TCW.resize(TCW.rows, TCW.cols);
+					for (int i = 0; i < TCW.rows; i++)
+					{
+						for (int j = 0; j < TCW.cols; j++)
+						{
+							TCW[i][j] = T_c_w.at<float>(i, j);
+						}
+					}
+					mpViewer->pub_Camera_pos->publish(TCW);
+
 				}
 
 				//所有的图像帧
 				mvAllFrame.push_back(curr_);
 
-				cv::Mat T_c_w = curr_->T_c_w_;
-				gpcs::mat TCW;
-				TCW.rows = 4; TCW.cols = 4;
-				TCW.resize(TCW.rows, TCW.cols);
-				for (int i = 0; i < TCW.rows; i++)
-				{
-					for (int j = 0; j < TCW.cols;j++)
-					{
-						TCW[i][j] = T_c_w.at<float>(i, j);
-					}
-				}
-				mpViewer->pub_Camera_pos->publish(TCW);
 				//向显示类中添加相信的数据,显示类我们单独做，现在找一找显示类viewer的入口
 				//map_.keyframe没有被绘制，被绘制的是mvAllFrame
 				//也就是说，只要没有lost，每一帧都是关键帧
@@ -211,8 +213,6 @@ namespace myslam
 		for (int i = 0; i < keypoints_curr_.size(); i++)
 		{
 			double d = ref_->findDepth(keypoints_curr_[i]);
-			if (d != -1)
-				hg++;
 			cv::Point3f p_cam = ref_->camera_->pixel2camera(cv::Point2f(keypoints_curr_[i].pt.x, keypoints_curr_[i].pt.y), d);
 			pts_3d_ref.push_back(p_cam);
 			points3d[i][0] = p_cam.x;
@@ -234,7 +234,7 @@ namespace myslam
 		for (int i = 0; i < feature_matches_.size(); i++)
 		{
 			if (pts_3d_ref[feature_matches_[i].queryIdx].z < 0)
-				continue;
+				continue;//全部的z都找不到大于0的值！为什么？
 
 			//上一帧的三维点
 			pts3d.push_back(pts_3d_ref[feature_matches_[i].queryIdx]);
@@ -254,7 +254,16 @@ namespace myslam
 
 		//pnp位姿计算
 		//错误，没有检测到任何特征？
-		cv::solvePnPRansac(pts3d, pts2d, K, cv::Mat(), rvec, tvec, false, 100, 4.0, 0.99, inliers);
+		
+		//pnp求解错误，原因：点数不够，按照错误报错提示修改一下吧
+		if(pts3d.size()<=4)
+		{
+			//此时返回的rvec和tvec都是0向量
+		}
+		else
+		{
+			cv::solvePnPRansac(pts3d, pts2d, K, cv::Mat(), rvec, tvec, false, 100, 4.0, 0.99, inliers);
+		}
 		num_inliers_ = inliers.size();
 		std::cout << "pnp inliers: " << inliers.size() << std::endl;
 

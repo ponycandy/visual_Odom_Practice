@@ -126,10 +126,20 @@ int main()
 		//depth_map
 		
 		
-		float d_actual;
-		depth_map.getValue(100, 100, &d_actual);
-		std::cout << "real d : " << d_actual << "\n";
-		//cv::Mat T_c_w = system.TrackingRGBD(im, imD, depth_map, timestamp);//这里Im应该没问题，在Qt里面就是这么用的
+		//float d_actual;
+		//depth_map.getValue(100, 100, &d_actual);
+		//int count = 0;
+		//for (int i = 0; i < 1280; i++)
+		//{
+		//	for (int j = 0; j < 720; j++)
+		//	{
+		//		depth_map.getValue(j, i, &d_actual);
+		//		if (d_actual != 0 && std::isnan(d_actual) != true )
+		//			count++;
+		//	}
+		//}
+		//std::cout << "real count : " << count << "\n";
+		cv::Mat T_c_w = system.TrackingRGBD(im, imD, depth_map, timestamp);//这里Im应该没问题，在Qt里面就是这么用的
 		
 		//相信这里有一定的稳定性，减小搜索空间
 	//	cv::imshow("Image", im);
