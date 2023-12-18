@@ -222,7 +222,13 @@ namespace myslam
 			descriptors_ref_.push_back(descriptors_curr_.row(i));
 		}
 		//直接将pts_3d_ref全体发送到另一边
-		mpViewer->pub_3Dpoints->publish(points3d);
+		if (keypoints_curr_.size() > 0)
+		{
+			mpViewer->pub_3Dpoints->publish(points3d);
+		}
+
+		std::cout << "maximum length : " << keypoints_curr_.size();
+
 	}
 
 	void VisualOdometry::poseEstimationPnP()
